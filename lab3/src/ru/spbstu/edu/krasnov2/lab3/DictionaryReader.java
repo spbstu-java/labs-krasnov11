@@ -8,14 +8,10 @@ public class DictionaryReader {
     public static HashMap<String, String> Read(Scanner scanner) throws Lab3FormatException {
         var result = new HashMap<String, String>();
 
-        var sbKey = new StringBuffer();
-        var sbValue = new StringBuffer();
+        var buffer = new StringBuffer();
 
         var lineNum = 0;
         while (scanner.hasNext()){
-
-
-
 
             lineNum++;
             var line = scanner.nextLine();
@@ -27,37 +23,37 @@ public class DictionaryReader {
                 throw new Lab3FormatException(String.format("Line %d. Delimiter '|' is not found. String value: '%s'", lineNum, line));
 
             var value = line.substring(0, delPos);
-            sbKey.setLength(0);
-            fillNormalized(value, sbKey);
+            fillNormalized(value, buffer);
 
-            if (sbKey.length() == 0)
+            if (buffer.isEmpty())
                 throw new Lab3FormatException(String.format("Line %d. There no word to translate. String value: '%s'", lineNum, line));
 
-            var key = sbKey.toString();
+            var key = buffer.toString();
             if (result.containsKey(key))
                 throw new Lab3DuplicateException(String.format("Line %d. Duplicate word. String value: '%s'", lineNum, line));
 
             value = line.substring(delPos + 1);
-            sbValue.setLength(0);
-            fillNormalized(value, sbValue);
+            fillNormalized(value, buffer);
 
-            if (sbValue.length() == 0)
+            if (buffer.isEmpty())
                 throw new Lab3FormatException(String.format("Line %d. There no translation text. String value: '%s'", lineNum, line));
 
-            result.put(key, sbValue.toString());
+            result.put(key, buffer.toString());
         }
 
         return result;
     }
 
-    private static void fillNormalized(String value, StringBuffer sbKey) {
+    private static void fillNormalized(String value, StringBuffer buffer) {
         var parts = value.split("\\s+");
 
-        for (var p : parts){
-            if (sbKey.length() > 0)
-                sbKey.append(' ');
+        buffer.setLength(0);
 
-            sbKey.append(p);
+        for (var p : parts){
+            if (!buffer.isEmpty())
+                buffer.append(' ');
+
+            buffer.append(p);
         }
     }
 }
