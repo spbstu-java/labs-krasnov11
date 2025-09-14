@@ -1,6 +1,5 @@
 package ru.spbstu.edu.krasnov2.lab2;
 
-import javax.naming.OperationNotSupportedException;
 import java.lang.reflect.InvocationTargetException;
 
 public class Caller {
@@ -13,7 +12,9 @@ public class Caller {
         this.valueProvider = valueProvider;
     }
 
-    public void ExecuteCalls(Object obj) throws InvocationTargetException, IllegalAccessException, OperationNotSupportedException {
+    public void ExecuteCalls(Object obj)
+            throws ValueProviderException, InvocationTargetException, IllegalAccessException {
+
         if (obj == null)
             throw new IllegalArgumentException("Argument obj is null");
 

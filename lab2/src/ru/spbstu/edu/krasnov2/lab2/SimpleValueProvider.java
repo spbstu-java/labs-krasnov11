@@ -1,6 +1,5 @@
 package ru.spbstu.edu.krasnov2.lab2;
 
-import javax.naming.OperationNotSupportedException;
 import java.util.HashMap;
 
 public class SimpleValueProvider implements ValueProvider{
@@ -30,7 +29,7 @@ public class SimpleValueProvider implements ValueProvider{
     }
 
     @Override
-    public Object getValue(Class<?> c) throws OperationNotSupportedException {
+    public Object getValue(Class<?> c) throws ValueProviderException {
 
         if (_values.containsKey(c))
             return _values.get(c);
@@ -41,6 +40,6 @@ public class SimpleValueProvider implements ValueProvider{
                 return _values.get(wrapper);
         }
 
-        throw new OperationNotSupportedException("Type " + c.getCanonicalName() + " is not supported");
+        throw new ValueProviderException("Type " + c.getCanonicalName() + " is not supported");
     }
 }

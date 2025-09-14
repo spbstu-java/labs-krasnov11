@@ -1,6 +1,5 @@
 package ru.spbstu.edu.krasnov2.lab2;
 
-import javax.naming.OperationNotSupportedException;
 import java.lang.reflect.InvocationTargetException;
 
 public class Main {
@@ -14,8 +13,8 @@ public class Main {
 
         try {
             caller.ExecuteCalls(new TestCallClass());
-        } catch (InvocationTargetException | IllegalAccessException | OperationNotSupportedException e) {
-            e.printStackTrace();
+        } catch (InvocationTargetException | IllegalAccessException | ValueProviderException e) {
+            System.err.println(e);
         }
     }
 }
