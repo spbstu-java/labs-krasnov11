@@ -11,6 +11,20 @@ public class WordDictionary {
     private final HashMap<String, String> _dictionary;
     private int _maxPartCount;
 
+    private static class translateContext {
+        final StringBuilder result = new StringBuilder();
+        final StringBuilder tmpBuffer = new StringBuilder();
+        int fillCount = 0;
+        int curIndex = 0;
+        String[] tokensQueue;
+        boolean[] whitespaceBefore;
+
+        public translateContext(int capacity) {
+            tokensQueue = new String[capacity];
+            whitespaceBefore = new boolean[capacity];
+        }
+    }
+
     public WordDictionary(){
         _dictionary = new HashMap<>();
         _maxPartCount = 0;
@@ -82,11 +96,7 @@ public class WordDictionary {
         if (line == null || line.isEmpty() || _dictionary.isEmpty())
             return line;
 
-        var notWhitespace = new String[_maxPartCount];
-        var whitespaceBefore = new boolean[_maxPartCount];
-
-        var result = new StringBuilder();
-        var tmpBuffer = new StringBuffer();
+        var context = new translateContext(_maxPartCount);
 
         try (var scanner = new Scanner(line)){
 
@@ -95,78 +105,81 @@ public class WordDictionary {
             // т.о. весь текст остается в токенах
             scanner.useDelimiter(DELIMITER_REGEX);
 
-            var fillCount = 0;
-            var curIndex = 0;
             while (scanner.hasNext()) {
 
                 var token = scanner.next();
                 System.out.println(token);
 
-                var j = (fillCount + curIndex) % _maxPartCount; // циклически
+                var j = (context.fillCount + context.curIndex) % _maxPartCount; // циклически
 
                 if (token.trim().isEmpty()){
                     // пробельные символы
-                    whitespaceBefore[j] = true;
+                    context.whitespaceBefore[j] = true;
                     continue;
                 }
 
-                notWhitespace[j] = token;
-                ++fillCount;
+                context.tokensQueue[j] = token;
+                ++context.fillCount;
 
                 // заполняем в буфере все места
-                if (fillCount < _maxPartCount)
+                if (context.fillCount < _maxPartCount)
                     continue;
 
-                var found = false;
-                for (int partCount = _maxPartCount; partCount > 0 && !found; --partCount) {
-
-                    var key = getKey(tmpBuffer, partCount, curIndex, notWhitespace);
-
-                    if (_dictionary.containsKey(key)){
-                        if (whitespaceBefore[curIndex])
-                            result.append(' ');
-
-                        for (int i = 0; i < partCount; i++) {
-                            j = (i + curIndex) % _maxPartCount; // циклически
-                            whitespaceBefore[j] = false;
-                        }
-
-                        var translated = _dictionary.get(key);
-                        result.append(translated);
-
-                        curIndex = (curIndex + partCount) % _maxPartCount;
-                        fillCount -= partCount;
-
-                        found = true;
-                    }
-                }
-
-                // с текущего слова переводить нечего
-                // первое считанное копируем в вывод, переходим к следующему
-                if (!found) {
-
-                    if (whitespaceBefore[curIndex])
-                        result.append(' ');
-
-                    whitespaceBefore[curIndex] = false;
-
-                    result.append(notWhitespace[curIndex]);
-
-                    curIndex = (curIndex + 1) % _maxPartCount;
-                    --fillCount;
-                }
+                processWords(context);
             }
 
             // оставшиеся считанные необработанные
-            while (fillCount > 0) {
-                --fillCount;
+            while (context.fillCount > 0) {
+                processWords(context);
             }
         }
 
-        return result.toString();
+        return context.result.toString();
     }
 
-    private String getKey(StringBuffer tmpBuffer, int partCount, int curIndex, String[] notWhitespace) {
+    private void processWords(translateContext context) {
+        int j;
+        var found = false;
+        for (int partCount = Math.min(_maxPartCount, context.fillCount); partCount > 0 && !found; --partCount) {
+
+            var key = getKey(context.tmpBuffer, partCount, context.curIndex, context.tokensQueue);
+
+            if (_dictionary.containsKey(key)){
+                if (context.whitespaceBefore[context.curIndex])
+                    context.result.append(' ');
+
+                for (int i = 0; i < partCount; i++) {
+                    j = (i + context.curIndex) % _maxPartCount; // циклически
+                    context.whitespaceBefore[j] = false;
+                }
+
+                var translated = _dictionary.get(key);
+                context.result.append(translated);
+
+                context.curIndex = (context.curIndex + partCount) % _maxPartCount;
+                context.fillCount -= partCount;
+
+                found = true;
+            }
+        }
+
+        // с текущего слова переводить нечего
+        // первое считанное копируем в вывод, переходим к следующему
+        if (!found) {
+
+            if (context.whitespaceBefore[context.curIndex])
+                context.result.append(' ');
+
+            context.whitespaceBefore[context.curIndex] = false;
+
+            context.result.append(context.tokensQueue[context.curIndex]);
+
+            context.curIndex = (context.curIndex + 1) % _maxPartCount;
+            --context.fillCount;
+        }
+    }
+
+    private String getKey(StringBuilder tmpBuffer, int partCount, int curIndex, String[] notWhitespace) {
         // собираем ключ для проверки
         tmpBuffer.setLength(0);
         for (int i = 0; i < partCount; i++) {
@@ -175,10 +188,9 @@ public class WordDictionary {
                 tmpBuffer.append(' ');
 
             var wordIndex = (curIndex + i) % _maxPartCount; // циклически
-            tmpBuffer.append(notWhitespace[wordIndex].trim());
+            tmpBuffer.append(notWhitespace[wordIndex].toLowerCase());
         }
 
-        var key = tmpBuffer.toString();
-        return key;
+        return tmpBuffer.toString();
     }
 }
