@@ -28,7 +28,7 @@ public class DictionaryReader {
             if (buffer.isEmpty())
                 throw new Lab3FormatException(String.format("Line %d. There no word to translate. String value: '%s'", lineNum, line));
 
-            var key = buffer.toString();
+            var key = buffer.toString().toLowerCase();
             if (result.containsKey(key))
                 throw new Lab3DuplicateException(String.format("Line %d. Duplicate word. String value: '%s'", lineNum, line));
 
