@@ -14,7 +14,7 @@ public class Main {
         try {
             caller.ExecuteCalls(new TestCallClass());
         } catch (InvocationTargetException | IllegalAccessException | ValueProviderException e) {
-            System.err.println(e);
+            System.err.printf("Error has occurred while trying to exec caller.ExecuteCalls.%n%s", e.toString());
         }
     }
 }
