@@ -128,7 +128,7 @@ public class WordDictionary {
 
                         for (int i = 0; i < partCount; i++) {
                             j = (i + curIndex) % _maxPartCount; // циклически
-                            whitespaceBefore[i] = false;
+                            whitespaceBefore[j] = false;
                         }
 
                         var translated = _dictionary.get(key);
