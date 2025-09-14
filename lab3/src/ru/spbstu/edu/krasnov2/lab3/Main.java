@@ -2,18 +2,12 @@ package ru.spbstu.edu.krasnov2.lab3;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws IOException, Lab3FileNotFound, Lab3FormatException {
 
         var dictionary = readDictionary(args.length > 0 ? args[0] : "");
-
-        System.out.println("Dictionary:");
-        for (var key : dictionary.keySet()){
-            System.out.printf("  '%s' : '%s'%n", key, dictionary.get(key));
-        }
 
         System.out.println();
         System.out.println("Enter text for a translation:");
@@ -23,18 +17,14 @@ public class Main {
             line = scanner.nextLine();
         }
 
-        var translated = getTranslated(dictionary, line);
+        var translated = dictionary.translate(line);
 
         System.out.println();
-        System.out.println("Translated text:");
-        System.out.println(translated);
+        System.out.println("Origin text:     " + line);
+        System.out.println("Translated text: " + translated);
     }
 
-    private static String getTranslated(HashMap<String, String> dictionary, String line) {
-        return line;
-    }
-
-    private static HashMap<String, String> readDictionary(String path) throws IOException, Lab3FileNotFound, Lab3FormatException {
+    private static WordDictionary readDictionary(String path) throws IOException, Lab3FileNotFound, Lab3FormatException {
 
         var fileName = (path != null && !path.isEmpty())
             ? path
@@ -46,11 +36,14 @@ public class Main {
         if (!file.exists())
             throw new Lab3FileNotFound("File not found: " + fileName);
 
-        try (var fis = new FileInputStream(file);
-             var isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
-             var scanner = new Scanner(isr)){
+        var result = new WordDictionary();
 
-            return DictionaryReader.Read(scanner);
+        try (var fis = new FileInputStream(file);
+             var reader = new InputStreamReader(fis, StandardCharsets.UTF_8)){
+
+            result.Read(reader);
         }
+
+        return result;
     }
 }
