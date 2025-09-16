@@ -28,7 +28,7 @@ public class Main {
 
         var fileName = (path != null && !path.isEmpty())
             ? path
-            : "./data/dictionary.txt";
+            : "./lab3/src/main/resources/dictionary.txt";
 
         var file = new File(fileName);
         System.out.printf("Used dictionary file: '%s'%n", file.getCanonicalPath());
@@ -39,8 +39,7 @@ public class Main {
         var result = new WordDictionary();
 
         try (var fis = new FileInputStream(file);
-             var reader = new InputStreamReader(fis, StandardCharsets.UTF_8)){
-
+            var reader = new InputStreamReader(fis, StandardCharsets.UTF_8)) {
             result.Read(reader);
         }
 

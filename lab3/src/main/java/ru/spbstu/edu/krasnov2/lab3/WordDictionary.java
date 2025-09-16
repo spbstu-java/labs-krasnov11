@@ -62,7 +62,7 @@ public class WordDictionary {
                 if (value.isEmpty())
                     throw new Lab3FormatException(String.format("Line %d. There no translation text. String value: '%s'", lineNum, line));
 
-                System.out.printf("'%s' : '%s'%n", key, value);
+                //System.out.printf("'%s' : '%s'%n", key, value);
 
                 _dictionary.put(key, value);
             }
