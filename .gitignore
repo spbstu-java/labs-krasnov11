@@ -1,4 +1,37 @@
-**/*.iml
-**/*.class
+# Логи
+*.log
+**/*/logs/
 
+# Исключения из сборки
+*.jar
+*.war
+*.ear
+
+# Файлы сборки
 **/*/target/
+**/*/build/
+**/*/out/
+**/*/bin/
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+**/*/.vscode/
+
+# Операционные системы
+.DS_Store
+Thumbs.db
+
+# Maven
+**/*/pom.xml.tag
+**/*/pom.xml.releaseBackup
+**/*/pom.xml.versionsBackup
+**/*/pom.xml.next
+
+# Прочее
+*.class
+*.tmp
+*.temp
+*.orig
