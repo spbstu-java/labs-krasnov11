@@ -1,6 +1,7 @@
 package ru.spbstu.edu.krasnov2.lab2;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 
 public class Caller {
 
@@ -22,6 +23,13 @@ public class Caller {
 
         for (var m : objClass.getDeclaredMethods()){
             System.out.printf("Process method: %s%n", m);
+
+            var modifiers = m.getModifiers();
+            if (Modifier.isPublic(modifiers))
+            {
+                System.out.println("Method is public, call will not be executed");
+                continue;
+            }
 
             for (var a : m.getAnnotations()){
 
