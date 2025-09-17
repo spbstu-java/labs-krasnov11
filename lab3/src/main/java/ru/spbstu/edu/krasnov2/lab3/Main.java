@@ -5,9 +5,26 @@ import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) throws IOException, Lab3FileNotFound, Lab3FormatException {
+    public static void main(String[] args) {
 
-        var dictionary = readDictionary(args.length > 0 ? args[0] : "");
+        WordDictionary dictionary;
+        try {
+            dictionary = readDictionary(args.length > 0 ? args[0] : "");
+        }
+        catch (IOException ex) {
+            System.err.printf("Error has occurred while trying to read dictionary%n%s", ex);
+            return;
+        }
+        catch (Lab3FileNotFound ex) {
+            System.err.printf("File not found%n%s", ex);
+            return;
+        } catch (Lab3FormatException ex) {
+            System.err.printf("Dictionary has format error%n%s", ex);
+            return;
+        } catch (Lab3DuplicateException ex) {
+            System.err.printf("Duplicate items in dictionary%n%s", ex);
+            return;
+        }
 
         System.out.println();
         System.out.println("Enter text for a translation:");
@@ -24,7 +41,8 @@ public class Main {
         System.out.println("Translated text: " + translated);
     }
 
-    private static WordDictionary readDictionary(String path) throws IOException, Lab3FileNotFound, Lab3FormatException {
+    private static WordDictionary readDictionary(String path)
+            throws IOException, Lab3FileNotFound, Lab3FormatException, Lab3DuplicateException {
 
         var fileName = (path != null && !path.isEmpty())
             ? path
