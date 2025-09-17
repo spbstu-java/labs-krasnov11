@@ -1,18 +1,37 @@
-# Eclipse
-.classpath
-.project
-.settings/
+# Логи
+*.log
+**/*/logs/
 
-# Intellij
+# Исключения из сборки
+*.jar
+*.war
+*.ear
+
+# Файлы сборки
+**/*/target/
+**/*/build/
+**/*/out/
+**/*/bin/
+
+# IDE
 .idea/
 *.iml
+*.ipr
 *.iws
+**/*/.vscode/
 
-# Mac
+# Операционные системы
 .DS_Store
+Thumbs.db
 
 # Maven
-log/
-target/
+**/*/pom.xml.tag
+**/*/pom.xml.releaseBackup
+**/*/pom.xml.versionsBackup
+**/*/pom.xml.next
 
-out/
+# Прочее
+*.class
+*.tmp
+*.temp
+*.orig

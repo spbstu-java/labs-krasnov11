@@ -13,10 +13,9 @@ public class Main {
         map.put("run", new RunHeroMove());
         map.put("fly", new FlyHeroMove());
 
-
         var hero = new Hero("superman", 0, 0, map.get("walk"));
 
-        var scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
 
         var gameProcess = true;
         while (gameProcess) {
