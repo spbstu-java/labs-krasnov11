@@ -24,10 +24,10 @@ public class Main {
         System.out.printf("Upper New: %s%n%n", arrayAsString(str));
 
         // метод, возвращающий список квадратов всех встречающихся только один раз элементов списка
-        System.out.println("---Distinct squares---");
+        System.out.println("---only one presented to square---");
         System.out.printf("Origin array: %s%n", arrayAsString(List.of(integers)));
-        var sqtrList = sumDistinctSquare(List.of(integers));
-        System.out.printf("Distinct squares: %s%n%n", arrayAsString(sqtrList));
+        var sqtrList = onlyOnePresentToSquare(List.of(integers));
+        System.out.printf("Squares: %s%n%n", arrayAsString(sqtrList));
 
         // метод, принимающий на вход коллекцию и возвращающий ее последний элемент
         // или кидающий исключение, если коллекция пуста
@@ -105,10 +105,13 @@ public class Main {
 
     // метод, возвращающий список квадратов всех встречающихся
     // только один раз элементов списка
-    private static List<Integer> sumDistinctSquare(List<Integer> numbers){
+    private static List<Integer> onlyOnePresentToSquare(List<Integer> numbers){
         return numbers
                 .stream()
-                .distinct()
+                .filter(x -> numbers
+                        .stream()
+                        .filter(y -> y.equals(x))
+                        .count() == 1)
                 .map(n -> n * n)
                 .toList();
     }
